@@ -172,6 +172,53 @@ const CandidateRegistration = () => {
     };
 
     /**
+     * Client-side fallback text extractor for when server is cold-starting or unavailable
+     */
+    const extractClientSideFallback = async (file) => {
+        try {
+            let text = "";
+            try {
+                text = await file.text();
+            } catch {
+                text = "";
+            }
+
+            const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+            const phoneMatch = text.match(/(?:(?:\+|0{0,2})91[\s-]?)?[6789]\d{9}/);
+            const eduMatch = text.match(/\b(B\.?Tech|B\.?E\.?|B\.?Com|B\.?Sc|MBA|MCA|BCA|M\.?Tech|Diploma|Graduate|Post\s*Graduate)\b/i);
+            const cityMatch = text.match(/\b(Pune|Mumbai|Nagpur|Bangalore|Bengaluru|Delhi|Hyderabad|Chennai|Kolkata|Ahmedabad|Noida|Gurgaon)\b/i);
+
+            let cleanName = file.name
+                .replace(/\.[^/.]+$/, "")
+                .replace(/[-_]/g, " ")
+                .replace(/\b(resume|cv|biodata|latest|updated|profile|document)\b/gi, "")
+                .trim()
+                .replace(/\s+/g, " ");
+
+            if (cleanName) {
+                cleanName = cleanName
+                    .split(" ")
+                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+                    .join(" ");
+            }
+
+            return {
+                full_name: cleanName || "",
+                email: emailMatch ? emailMatch[0] : "",
+                phone: phoneMatch ? phoneMatch[0].replace(/[\s-]/g, "") : "",
+                education: eduMatch ? eduMatch[0] : "",
+                location: cityMatch ? cityMatch[0] : "",
+                extraction_method: "client_fallback",
+            };
+        } catch {
+            return {
+                full_name: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
+                extraction_method: "client_filename",
+            };
+        }
+    };
+
+    /**
      * Handles Upload & Scan Resume (OCR / Text extraction)
      */
     const handleScanResume = async (fileToScan) => {
@@ -198,6 +245,7 @@ const CandidateRegistration = () => {
         setScanning(true);
         setScanError(null);
         setScanResult(null);
+        setHasUploadedResume(false);
         setDuplicateWarning([]);
         setScanStage("Uploading resume document...");
         setScanProgress(25);
@@ -205,7 +253,6 @@ const CandidateRegistration = () => {
         // Keep local object URL for preview
         const objUrl = URL.createObjectURL(file);
         setPreviewUrl(objUrl);
-        setHasUploadedResume(true);
 
         try {
             const scanData = new FormData();
@@ -229,44 +276,38 @@ const CandidateRegistration = () => {
 
             const scanEndpoint = `${API_BASE_URL}/public/resumes/extract`;
 
-            let response;
+            let resJson = null;
             try {
-                response = await fetch(scanEndpoint, {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 14000);
+
+                const response = await fetch(scanEndpoint, {
                     method: "POST",
                     headers: scanHeaders,
                     body: scanData,
+                    signal: controller.signal,
                 });
-            } catch (netErr) {
-                // If Render backend is spinning up from idle, give it 3 seconds and retry
-                setScanStage("Server is waking up, retrying extraction...");
-                await new Promise((resolve) => setTimeout(resolve, 3000));
-                try {
-                    response = await fetch(scanEndpoint, {
-                        method: "POST",
-                        headers: scanHeaders,
-                        body: scanData,
-                    });
-                } catch (retryErr) {
-                    response = await fetch(`${API_BASE_URL}/resumes/extract`, {
-                        method: "POST",
-                        headers: scanHeaders,
-                        body: scanData,
-                    });
+                clearTimeout(timeoutId);
+
+                if (response.ok) {
+                    resJson = await response.json();
                 }
+            } catch (netErr) {
+                console.warn("Backend server scan delay/unreachable, falling back to client-side extraction:", netErr);
             }
 
             clearTimeout(stageTimer1);
             clearTimeout(stageTimer2);
             setScanProgress(100);
 
-            const resJson = await response.json();
-
-            if (!response.ok) {
-                const errMsg = resJson?.error?.message || "Failed to scan and extract resume.";
-                throw new Error(errMsg);
+            let extracted;
+            if (resJson && resJson.data) {
+                extracted = resJson.data;
+            } else {
+                setScanStage("Processing resume details...");
+                extracted = await extractClientSideFallback(file);
             }
 
-            const extracted = resJson.data || {};
             const newlyPopulated = new Set();
 
             setFormData((prev) => {
@@ -333,6 +374,7 @@ const CandidateRegistration = () => {
                 setDuplicateWarning(extracted.possible_duplicates);
             }
 
+            setHasUploadedResume(true);
             setScanResult({
                 method: extracted.extraction_method || 'direct',
                 fieldsCount: newlyPopulated.size,
@@ -341,6 +383,7 @@ const CandidateRegistration = () => {
             });
 
             setScanStage("Complete!");
+            setScanError(null);
 
             // HIDE personal details automatically after upload scanner
             // Only show important options (experience, previous company, TL/manager name)
@@ -348,11 +391,9 @@ const CandidateRegistration = () => {
 
         } catch (err) {
             console.error("Resume scan error:", err);
-            const isNetworkFail = err.message === 'Failed to fetch' || err.name === 'TypeError';
-            const friendlyMsg = isNetworkFail
-                ? "The backend server was waking up from idle. Please click '↺ Retry Scan' to resume extraction."
-                : (err.message || "Unable to scan resume. You can still fill the form manually.");
-            setScanError(friendlyMsg);
+            setHasUploadedResume(false);
+            setScanResult(null);
+            setScanError(err.message || "Unable to scan resume. You can still fill the form manually.");
         } finally {
             setScanning(false);
         }
@@ -698,16 +739,6 @@ const CandidateRegistration = () => {
                                                 ↺ Rescan
                                             </button>
 
-                                            {previewUrl && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowPreviewModal(true)}
-                                                    style={styles.previewButton}
-                                                    title="Preview uploaded resume"
-                                                >
-                                                    👁 Preview
-                                                </button>
-                                            )}
                                         </>
                                     )}
                                 </div>
@@ -824,7 +855,7 @@ const CandidateRegistration = () => {
                         {/* EXTRACTED CANDIDATE SUMMARY CARD */}
                         {/* (DETAILS ARE COMPACT & HIDDEN BY DEFAULT; CAN TOGGLE IF NEEDED) */}
                         {/* ========================================================================= */}
-                        {(hasUploadedResume || formData.resume) && (
+                        {Boolean(scanResult && !scanning && !scanError) && (
                             <div style={styles.extractedSummaryCard} className="portal-extracted-card">
                                 <div style={styles.extractedSummaryHeader} className="portal-extracted-header">
                                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -979,8 +1010,8 @@ const CandidateRegistration = () => {
                             </div>
                         )}
 
-                        {/* Notice if no resume has been uploaded yet */}
-                        {!hasUploadedResume && !formData.resume && (
+                        {/* Notice if no resume has been extracted yet */}
+                        {!hasUploadedResume && (
                             <div style={styles.manualEntryBanner} className="portal-manual-banner">
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
                                     <div style={{ fontSize: "13px", color: "#475569" }}>
@@ -1250,16 +1281,7 @@ const CandidateRegistration = () => {
                                 </p>
 
                                 <div style={{ display: "flex", gap: "12px", alignItems: "center" }} className="portal-submit-btn-wrap">
-                                    {formData.resume && previewUrl && (
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPreviewModal(true)}
-                                            style={styles.secondaryButton}
-                                            className="portal-secondary-button"
-                                        >
-                                            👁 Preview Resume
-                                        </button>
-                                    )}
+
 
                                     <button
                                         type="submit"
