@@ -65,6 +65,11 @@ const CandidateRegistration = () => {
         };
     }, [previewUrl]);
 
+    // Warm up backend on page load to prevent Render cold-start lag
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/health`).catch(() => {});
+    }, []);
+
     // Process list based on department
     const processesByDepartment = {
         "1": [
@@ -232,11 +237,22 @@ const CandidateRegistration = () => {
                     body: scanData,
                 });
             } catch (netErr) {
-                response = await fetch(`${API_BASE_URL}/resumes/extract`, {
-                    method: "POST",
-                    headers: scanHeaders,
-                    body: scanData,
-                });
+                // If Render backend is spinning up from idle, give it 3 seconds and retry
+                setScanStage("Server is waking up, retrying extraction...");
+                await new Promise((resolve) => setTimeout(resolve, 3000));
+                try {
+                    response = await fetch(scanEndpoint, {
+                        method: "POST",
+                        headers: scanHeaders,
+                        body: scanData,
+                    });
+                } catch (retryErr) {
+                    response = await fetch(`${API_BASE_URL}/resumes/extract`, {
+                        method: "POST",
+                        headers: scanHeaders,
+                        body: scanData,
+                    });
+                }
             }
 
             clearTimeout(stageTimer1);
@@ -332,7 +348,11 @@ const CandidateRegistration = () => {
 
         } catch (err) {
             console.error("Resume scan error:", err);
-            setScanError(err.message || "Unable to scan resume. You can still fill the form manually.");
+            const isNetworkFail = err.message === 'Failed to fetch' || err.name === 'TypeError';
+            const friendlyMsg = isNetworkFail
+                ? "The backend server was waking up from idle. Please click '↺ Retry Scan' to resume extraction."
+                : (err.message || "Unable to scan resume. You can still fill the form manually.");
+            setScanError(friendlyMsg);
         } finally {
             setScanning(false);
         }
@@ -718,12 +738,32 @@ const CandidateRegistration = () => {
                             {/* Scan Error Message */}
                             {scanError && (
                                 <div style={styles.scanErrorBanner}>
-                                    <span style={{ fontWeight: "700", marginRight: "8px" }}>⚠️ Error:</span>
-                                    <span>{scanError}</span>
+                                    <span style={{ fontWeight: "700", marginRight: "8px" }}>⚠️ Note:</span>
+                                    <span style={{ flex: 1 }}>{scanError}</span>
+                                    {formData.resume && (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleScanResume(formData.resume)}
+                                            style={{
+                                                marginLeft: "10px",
+                                                background: "#dc2626",
+                                                color: "#ffffff",
+                                                border: "none",
+                                                padding: "5px 12px",
+                                                borderRadius: "6px",
+                                                fontSize: "12px",
+                                                fontWeight: "700",
+                                                cursor: "pointer",
+                                                whiteSpace: "nowrap"
+                                            }}
+                                        >
+                                            ↺ Retry Scan
+                                        </button>
+                                    )}
                                     <button
                                         type="button"
                                         onClick={() => setScanError(null)}
-                                        style={{ marginLeft: "auto", background: "transparent", border: "none", cursor: "pointer", fontSize: "16px" }}
+                                        style={{ marginLeft: "8px", background: "transparent", border: "none", cursor: "pointer", fontSize: "16px", color: "#991b1b" }}
                                     >
                                         ×
                                     </button>
