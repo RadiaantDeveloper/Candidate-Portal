@@ -8,14 +8,40 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      * { box-sizing: border-box; }
-      body {
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body {
         margin: 0;
         padding: 0;
+        width: 100%;
+        overflow-x: hidden;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         background-color: #f8fafc;
         color: #0f172a;
         -webkit-font-smoothing: antialiased;
+      }
+      @media (max-width: 768px) {
+        .portal-main { padding: 16px 14px 44px !important; }
+        .portal-header-content { padding: 12px 14px !important; flex-wrap: wrap !important; gap: 10px !important; }
+        .portal-brand { font-size: 18px !important; }
+        .portal-brand-subtext { font-size: 11px !important; }
+        .portal-header-badge { font-size: 11px !important; padding: 4px 8px !important; white-space: nowrap !important; }
+        .portal-title { font-size: 22px !important; }
+        .portal-subtitle { font-size: 13px !important; }
+        .portal-scanner-card, .portal-section { padding: 16px 12px !important; }
+        .portal-grid, .form-grid, [style*="repeat(2, minmax(0, 1fr))"] {
+          grid-template-columns: 1fr !important;
+          gap: 14px !important;
+        }
+        .portal-company-card { padding: 14px 12px !important; }
+        input[type="text"], input[type="tel"], input[type="email"], select, textarea, .portal-input {
+          font-size: 16px !important;
+          min-height: 44px !important;
+        }
+        .portal-add-company-btn { width: 100% !important; min-height: 44px !important; }
+        .portal-submit-area { flex-direction: column-reverse !important; align-items: stretch !important; gap: 12px !important; }
+        .portal-submit-btn-wrap { width: 100% !important; flex-direction: column !important; display: flex !important; gap: 10px !important; }
+        .portal-submit-button { width: 100% !important; justify-content: center !important; min-height: 48px !important; font-size: 15px !important; }
+        .portal-required-text { text-align: center !important; }
       }
     </style>
   </head>

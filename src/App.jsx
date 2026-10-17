@@ -581,22 +581,22 @@ const CandidateRegistration = () => {
         <div style={styles.page}>
             {/* Header */}
             <header style={styles.header}>
-                <div style={styles.headerContent}>
+                <div style={styles.headerContent} className="portal-header-content">
                     <div>
-                        <div style={styles.brand}>Talentdesk HR CRM</div>
-                        <div style={styles.brandSubtext}>Candidate Application & OCR Resume Portal</div>
+                        <div style={styles.brand} className="portal-brand">Talentdesk HR CRM</div>
+                        <div style={styles.brandSubtext} className="portal-brand-subtext">Candidate Application & OCR Resume Portal</div>
                     </div>
-                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                        <div style={styles.headerBadge}>Career Opportunities</div>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }} className="portal-header-badge-wrap">
+                        <div style={styles.headerBadge} className="portal-header-badge">Career Opportunities</div>
                     </div>
                 </div>
             </header>
 
-            <main style={styles.main}>
+            <main style={styles.main} className="portal-main">
                 {/* Page Heading */}
-                <div style={styles.pageHeading}>
-                    <h1 style={styles.title}>Candidate Registration</h1>
-                    <p style={styles.subtitle}>
+                <div style={styles.pageHeading} className="portal-page-heading">
+                    <h1 style={styles.title} className="portal-title">Candidate Registration</h1>
+                    <p style={styles.subtitle} className="portal-subtitle">
                         Upload or scan your resume. Your profile is automatically parsed, showing only the important work experience and role details.
                     </p>
                 </div>
@@ -618,8 +618,8 @@ const CandidateRegistration = () => {
                     /* ========================================================================= */
                     <>
                         {/* OCR RESUME SCANNER & UPLOAD CARD */}
-                        <section style={styles.scannerCard}>
-                            <div style={styles.scannerHeader}>
+                        <section style={styles.scannerCard} className="portal-scanner-card">
+                            <div style={styles.scannerHeader} className="portal-scanner-header">
                                 <div style={styles.scannerBadge}>
                                     <span style={{ fontSize: "16px" }}>⚡</span> OCR Resume Scanner
                                 </div>
@@ -632,7 +632,7 @@ const CandidateRegistration = () => {
                                 </div>
                             </div>
 
-                            <div style={styles.scannerBody}>
+                            <div style={styles.scannerBody} className="portal-scanner-body">
                                 <div style={{ flex: 1 }}>
                                     <h3 style={{ margin: "0 0 6px 0", fontSize: "16px", fontWeight: "700", color: "#0f172a" }}>
                                         Upload & Scan Resume
@@ -642,7 +642,7 @@ const CandidateRegistration = () => {
                                     </p>
                                 </div>
 
-                                <div style={styles.scannerActions}>
+                                <div style={styles.scannerActions} className="portal-scanner-actions">
                                     <input
                                         ref={scanInputRef}
                                         type="file"
@@ -655,6 +655,7 @@ const CandidateRegistration = () => {
                                         type="button"
                                         onClick={() => scanInputRef.current?.click()}
                                         disabled={scanning}
+                                        className="portal-scan-button"
                                         style={{
                                             ...styles.scanButton,
                                             opacity: scanning ? 0.7 : 1,
@@ -784,8 +785,8 @@ const CandidateRegistration = () => {
                         {/* (DETAILS ARE COMPACT & HIDDEN BY DEFAULT; CAN TOGGLE IF NEEDED) */}
                         {/* ========================================================================= */}
                         {(hasUploadedResume || formData.resume) && (
-                            <div style={styles.extractedSummaryCard}>
-                                <div style={styles.extractedSummaryHeader}>
+                            <div style={styles.extractedSummaryCard} className="portal-extracted-card">
+                                <div style={styles.extractedSummaryHeader} className="portal-extracted-header">
                                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                                         <div style={styles.extractedAvatar}>
                                             {formData.fullName ? formData.fullName.charAt(0).toUpperCase() : "👤"}
@@ -832,7 +833,7 @@ const CandidateRegistration = () => {
                                         <div style={{ marginBottom: "14px", fontSize: "12px", color: "#64748b" }}>
                                             The fields below were auto-filled from your resume. Modify only if there is a correction needed:
                                         </div>
-                                        <div style={styles.grid}>
+                                        <div style={styles.grid} className="portal-grid">
                                             <FormField
                                                 label="Full Name"
                                                 required
@@ -940,7 +941,7 @@ const CandidateRegistration = () => {
 
                         {/* Notice if no resume has been uploaded yet */}
                         {!hasUploadedResume && !formData.resume && (
-                            <div style={styles.manualEntryBanner}>
+                            <div style={styles.manualEntryBanner} className="portal-manual-banner">
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
                                     <div style={{ fontSize: "13px", color: "#475569" }}>
                                         💡 <strong>Tip:</strong> Uploading your resume auto-fills all details. Or you can enter basic details manually:
@@ -956,7 +957,7 @@ const CandidateRegistration = () => {
 
                                 {showPersonalDetails && (
                                     <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #e2e8f0" }}>
-                                        <div style={styles.grid}>
+                                        <div style={styles.grid} className="portal-grid">
                                             <FormField
                                                 label="Full Name"
                                                 required
@@ -1028,12 +1029,12 @@ const CandidateRegistration = () => {
                             {/* ========================================================= */}
                             {/* SECTION 1: WORK EXPERIENCE & PREVIOUS COMPANIES */}
                             {/* ========================================================= */}
-                            <section style={styles.section}>
-                                <div style={styles.sectionHeader}>
+                            <section style={styles.section} className="portal-section">
+                                <div style={styles.sectionHeader} className="portal-section-header">
                                     <div style={styles.sectionNumber}>💼</div>
                                     <div>
-                                        <h2 style={styles.sectionTitle}>Work Experience & Previous Employment</h2>
-                                        <p style={styles.sectionDescription}>
+                                        <h2 style={styles.sectionTitle} className="portal-section-title">Work Experience & Previous Employment</h2>
+                                        <p style={styles.sectionDescription} className="portal-section-description">
                                             Select experience level, previous company, and TL / manager name. Use "+ Add More" for additional companies.
                                         </p>
                                     </div>
@@ -1052,6 +1053,7 @@ const CandidateRegistration = () => {
                                                 value={formData.experience}
                                                 onChange={handleChange}
                                                 style={getInputStyle("experience")}
+                                                className="portal-input"
                                                 required
                                             >
                                                 <option value="">Select experience level</option>
@@ -1096,8 +1098,8 @@ const CandidateRegistration = () => {
 
                                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                                             {formData.previousCompanies.map((comp, idx) => (
-                                                <div key={idx} style={styles.companyExperienceCard}>
-                                                    <div style={styles.companyCardHeader}>
+                                                <div key={idx} style={styles.companyExperienceCard} className="portal-company-card">
+                                                    <div style={styles.companyCardHeader} className="portal-company-header">
                                                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                                                             <span style={styles.companyBadgeNumber}>#{idx + 1}</span>
                                                             <span style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a" }}>
@@ -1116,7 +1118,7 @@ const CandidateRegistration = () => {
                                                         )}
                                                     </div>
 
-                                                    <div style={styles.grid}>
+                                                    <div style={styles.grid} className="portal-grid">
                                                         {/* Previous Company Name */}
                                                         <FormField
                                                             label="Previous Company Name"
@@ -1128,6 +1130,7 @@ const CandidateRegistration = () => {
                                                                     onChange={(e) => handleCompanyChange(idx, "companyName", e.target.value)}
                                                                     placeholder="e.g. Mpower / ABC Tech / Bajaj Finserv"
                                                                     style={styles.input}
+                                                                    className="portal-input"
                                                                     required={idx === 0 && formData.experience && formData.experience !== "Fresher"}
                                                                 />
                                                             }
@@ -1144,6 +1147,7 @@ const CandidateRegistration = () => {
                                                                     onChange={(e) => handleCompanyChange(idx, "managerName", e.target.value)}
                                                                     placeholder="e.g. Mr. Rajesh Sharma (Team Leader / Reporting Manager)"
                                                                     style={styles.input}
+                                                                    className="portal-input"
                                                                     required={idx === 0 && formData.experience && formData.experience !== "Fresher"}
                                                                 />
                                                             }
@@ -1159,6 +1163,7 @@ const CandidateRegistration = () => {
                                                                     onChange={(e) => handleCompanyChange(idx, "designation", e.target.value)}
                                                                     placeholder="e.g. Telecaller / Sr. Executive"
                                                                     style={styles.input}
+                                                                    className="portal-input"
                                                                 />
                                                             }
                                                         />
@@ -1173,6 +1178,7 @@ const CandidateRegistration = () => {
                                                                     onChange={(e) => handleCompanyChange(idx, "duration", e.target.value)}
                                                                     placeholder="e.g. 1 Year 6 Months"
                                                                     style={styles.input}
+                                                                    className="portal-input"
                                                                 />
                                                             }
                                                         />
@@ -1187,6 +1193,7 @@ const CandidateRegistration = () => {
                                                 type="button"
                                                 onClick={handleAddCompany}
                                                 style={styles.addCompanyBtnSecondary}
+                                                className="portal-add-company-btn"
                                             >
                                                 + Add More Option (Another Company Experience)
                                             </button>
@@ -1197,17 +1204,18 @@ const CandidateRegistration = () => {
 
 
                             {/* Submit Area */}
-                            <div style={styles.submitArea}>
-                                <p style={styles.requiredText}>
+                            <div style={styles.submitArea} className="portal-submit-area">
+                                <p style={styles.requiredText} className="portal-required-text">
                                     <span style={styles.required}>*</span> Required fields
                                 </p>
 
-                                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                                <div style={{ display: "flex", gap: "12px", alignItems: "center" }} className="portal-submit-btn-wrap">
                                     {formData.resume && previewUrl && (
                                         <button
                                             type="button"
                                             onClick={() => setShowPreviewModal(true)}
                                             style={styles.secondaryButton}
+                                            className="portal-secondary-button"
                                         >
                                             👁 Preview Resume
                                         </button>
@@ -1215,6 +1223,7 @@ const CandidateRegistration = () => {
 
                                     <button
                                         type="submit"
+                                        className="portal-submit-button"
                                         style={{
                                             ...styles.submitButton,
                                             opacity: loading ? 0.7 : 1,
@@ -1242,7 +1251,7 @@ const CandidateRegistration = () => {
             {/* Resume Preview Modal */}
             {showPreviewModal && previewUrl && (
                 <div style={styles.modalOverlay} onClick={() => setShowPreviewModal(false)}>
-                    <div style={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
+                    <div style={styles.modalContainer} className="portal-modal-container" onClick={(e) => e.stopPropagation()}>
                         <div style={styles.modalHeader}>
                             <div>
                                 <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "700" }}>

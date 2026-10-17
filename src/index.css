@@ -1,0 +1,222 @@
+/* ========================================================= */
+/* CANDIDATE PORTAL - RESPONSIVE STYLESHEET                  */
+/* ========================================================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base input touch improvements */
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+/* ========================================================= */
+/* TABLET & MOBILE BREAKPOINT (<= 768px)                     */
+/* ========================================================= */
+@media (max-width: 768px) {
+  /* Container layout */
+  .portal-main {
+    padding: 16px 14px 44px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Header Bar */
+  .portal-header-content {
+    padding: 12px 14px !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+  .portal-brand {
+    font-size: 18px !important;
+    line-height: 1.25 !important;
+  }
+  .portal-brand-subtext {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+  }
+  .portal-header-badge-wrap {
+    width: auto !important;
+  }
+  .portal-header-badge {
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Page Heading */
+  .portal-page-heading {
+    margin-bottom: 18px !important;
+  }
+  .portal-title {
+    font-size: 22px !important;
+    line-height: 1.25 !important;
+  }
+  .portal-subtitle {
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+  }
+
+  /* Scanner Card */
+  .portal-scanner-card {
+    padding: 16px 14px !important;
+    border-radius: 10px !important;
+    margin-bottom: 16px !important;
+  }
+  .portal-scanner-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  .portal-scanner-body {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 14px !important;
+  }
+  .portal-scanner-actions {
+    width: 100% !important;
+    flex-direction: column !important;
+  }
+  .portal-scan-button {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+  }
+
+  /* Extracted Summary Card */
+  .portal-extracted-card {
+    padding: 14px 12px !important;
+    margin-bottom: 16px !important;
+  }
+  .portal-extracted-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  /* Manual Entry Banner */
+  .portal-manual-banner {
+    padding: 14px 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* Form Sections */
+  .portal-section {
+    padding: 16px 12px !important;
+    border-radius: 10px !important;
+    margin-bottom: 16px !important;
+  }
+  .portal-section-header {
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+  }
+  .portal-section-title {
+    font-size: 16px !important;
+  }
+  .portal-section-description {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* ======================================================= */
+  /* CRITICAL FORM GRID: Single column layout on Mobile     */
+  /* ======================================================= */
+  .portal-grid,
+  .form-grid,
+  [style*="repeat(2, minmax(0, 1fr))"] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  /* Company Card inside Work Experience */
+  .portal-company-card {
+    padding: 14px 12px !important;
+    border-radius: 8px !important;
+  }
+  .portal-company-header {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* Touch-friendly inputs: 16px stops iOS auto-zoom */
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea,
+  .portal-input {
+    font-size: 16px !important;
+    min-height: 44px !important;
+    padding: 10px 12px !important;
+    width: 100% !important;
+  }
+
+  /* Form Labels */
+  label {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Add Company Button */
+  .portal-add-company-btn {
+    width: 100% !important;
+    padding: 12px !important;
+    min-height: 44px !important;
+    font-size: 13px !important;
+  }
+
+  /* Submit Area */
+  .portal-submit-area {
+    flex-direction: column-reverse !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    margin-top: 20px !important;
+  }
+  .portal-submit-btn-wrap {
+    width: 100% !important;
+    flex-direction: column !important;
+    display: flex !important;
+    gap: 10px !important;
+  }
+  .portal-submit-button {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 14px 20px !important;
+    font-size: 15px !important;
+    min-height: 48px !important;
+  }
+  .portal-secondary-button {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+    text-align: center !important;
+  }
+  .portal-required-text {
+    text-align: center !important;
+    margin: 4px 0 0 0 !important;
+  }
+
+  /* Modal preview */
+  .portal-modal-container {
+    width: 95% !important;
+    max-height: 90vh !important;
+    padding: 14px !important;
+  }
+}
